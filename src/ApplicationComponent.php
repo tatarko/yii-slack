@@ -95,10 +95,14 @@ class ApplicationComponent extends CApplicationComponent
      */
     public function getAccessToken()
     {
-        return Yii::app()->user->getState(
-            $this->tokenStateName,
-            $this->companyToken
-        );
+        try {
+            return Yii::app()->user->getState(
+                $this->tokenStateName,
+                $this->companyToken
+            );
+        } catch(CException $ex) {
+            return $this->companyToken;
+        }
     }
 
     /**
