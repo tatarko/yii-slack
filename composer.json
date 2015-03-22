@@ -1,0 +1,15 @@
+{
+    "name": "tatarko/yii-slack",
+    "description": "Yii extension for accessing Slack API with Guzzle interface",
+    "require": {
+        "guzzlehttp/guzzle": "~5.2",
+        "yiisoft/yii": "~1.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tomáš Tatarko",
+            "email": "tomas@tatarko.sk"
+        }
+    ]
+}
