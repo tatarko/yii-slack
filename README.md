@@ -3,13 +3,17 @@ Yii extension for accessing Slack API in Yii framework via Guzzle.
 
 ## Installation
 
-**Yii Slack** is composer library so you can install the latest version with `composer require tatarko/yii-slack`.
+**Yii Slack** is composer library so you can install the latest version with:
+
+```shell
+composer require tatarko/yii-slack
+```
 
 ## Configuration
 
 To your application's config add following:
 
-```
+```php
 'components' => array(
 	'slack' => array(
 		'class' => 'Tatarko\\YiiSlack\\ApplicationComponent',
@@ -19,11 +23,9 @@ To your application's config add following:
 )
 ```
 
-For OAuth authentication add following method to the controller of your choise:
+For OAuth authentication add following method to the controller:
 
-```
-<?php
-
+```php
 class SiteController extends Controller
 {
 	public function actions()
@@ -41,7 +43,7 @@ class SiteController extends Controller
 
 ## Usage
 
-For simple OAuth you need just make one link visible to user in any view:
+For simple OAuth just create link in any view file:
 
 ```php
 <a href="<?= $this->createUrl('site/slack') ?>">Login with Slack</a>
@@ -57,19 +59,31 @@ And in case that user is really authenticated you can make API call like:
 
 ```php
 var_dump(Yii::app()->slack->get('auth.test'));
-
-// prints something like:
-// array(2) {
-//  'ok' =>
-//  bool(true)
-//  'url' =>
-//  string(25) "https://myteam.slack.com/"
-// }
 ```
+
+That prints something likes:
+
+```shell
+array(6) {
+  'ok' =>
+  bool(true)
+  'url' =>
+  string(25) "https://myteam.slack.com/"
+  'team' =>
+  string(7) "My Team"
+  'user'
+  string(3) "cal"
+  'team_id'
+  string(6) "T12345"
+  'user_id'
+  string(6) "U12345"
+}
+```
+
 For additional arguments use:
 
 ```php
 Yii::app()->slack->post('channels.create', array('name' => 'mychannel'));
 ```
 
-For complete list of all available methods and their arguments read official [Slack documentation](https://api.slack.com/methods).
+For complete list of all available methods and their arguments go to official [Slack documentation](https://api.slack.com/methods).
