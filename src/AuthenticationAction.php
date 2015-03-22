@@ -79,15 +79,15 @@ class AuthenticationAction extends CAction
             $this->catchCode($code);
         } elseif($error) {
             Yii::log($error, $error == 'invalid_code' ? CLogger::LEVEL_WARNING : CLogger::LEVEL_ERROR, 'slack');
-            Yii::app()->redirect($this->errorUrl);
+            $this->controller->redirect($this->errorUrl);
         }
 
-        Yii::app()->redirect(
+        $this->controller->redirect(
             'https://slack.com/oauth/authorize?' . http_build_query([
                 'client_id' => $this->getSlackComponent()->appId,
-                'redirect_uri' => Yii::app()->createAbsoluteUrl(''),
+                'redirect_uri' => $this->controller->createAbsoluteUrl($this->id),
                 'scope' => implode(',', $this->scopes),
-                'state' => Yii::app()->session->id,
+                'state' => Yii::app()->session->sessionID,
             ])
         );
     }
@@ -105,16 +105,16 @@ class AuthenticationAction extends CAction
                 'client_id' => $slack->appId,
                 'client_secret' => $slack->appSecret,
                 'code' => $code,
-                'redirect_uri' => Yii::app()->createAbsoluteUrl(''),
+                'redirect_uri' => $this->controller->createAbsoluteUrl($this->id),
             ]);
             Yii::app()->user->setState(
-                $slack->userTokenState,
+                $slack->tokenStateName,
                 $response['access_token']
             );
-            Yii::app()->redirect($this->successUrl);
+            $this->controller->redirect($this->successUrl);
         } catch(TransferException $ex) {
             Yii::log($ex, CLogger::LEVEL_ERROR, 'slack');
-            Yii::app()->redirect($this->errorUrl);
+            $this->controller->redirect($this->errorUrl);
         }
     }
 }

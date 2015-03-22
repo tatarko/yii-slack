@@ -23,6 +23,9 @@ use GuzzleHttp\Client;
  * via Guzzle connection interface.
  *
  * @author Tomáš Tatarko <tomas@tatarko.sk>
+ * @property-read \GuzzleHttp\Client $connection Active Guzzle connection to Slack API
+ * @property-read string $accessToken Access token for Slack API
+ * @property-read boolean $isAuthenticated Is current web user authenticated to access Slack API?
  */
 class ApplicationComponent extends CApplicationComponent
 {
@@ -42,7 +45,7 @@ class ApplicationComponent extends CApplicationComponent
      * Name of the user's state to store access token
      * @var string
      */
-    public $userTokenState = 'slack.access.token';
+    public $tokenStateName = 'slack.access.token';
 
     /**
      * Company's global access token
@@ -93,7 +96,7 @@ class ApplicationComponent extends CApplicationComponent
     public function getAccessToken()
     {
         return Yii::app()->user->getState(
-            $this->userTokenState,
+            $this->tokenStateName,
             $this->companyToken
         );
     }
@@ -124,5 +127,15 @@ class ApplicationComponent extends CApplicationComponent
         return $this->getConnection()->post($method, [
             'query' => $data + ['token' => $this->getAccessToken()]
         ])->json();
+    }
+
+    /**
+     * Checks if current's web user is authenticated
+     *
+     * @return boolean
+     */
+    public function getIsAuthenticated()
+    {
+        return Yii::app()->user->hasState($this->tokenStateName);
     }
 }
