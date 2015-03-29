@@ -1,12 +1,18 @@
 <?php
 
-/*
+/**
  * This file is part of the YiiSlack package.
- *
- * (c) Tomáš Tatarko <tomas@tatarko.sk>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * PHP Version 5.4
+ *
+ * @category Connections
+ * @package  YiiSlack
+ * @author   Tomáš Tatarko <tomas@tatarko.sk>
+ * @license  http://choosealicense.com/licenses/mit/ MIT
+ * @link     https://github.com/tatarko/yii-slack Official repozitory
  */
 
 namespace Tatarko\YiiSlack;
@@ -22,10 +28,14 @@ use GuzzleHttp\Client;
  * Yii application component for accessing Slack API
  * via Guzzle connection interface.
  *
- * @author Tomáš Tatarko <tomas@tatarko.sk>
- * @property-read \GuzzleHttp\Client $connection Active Guzzle connection to Slack API
+ * @category      Connections
+ * @package       YiiSlack
+ * @author        Tomáš Tatarko <tomas@tatarko.sk>
+ * @license       http://choosealicense.com/licenses/mit/ MIT
+ * @link          https://github.com/tatarko/yii-slack Official repozitory
+ * @property-read \GuzzleHttp\Client $connection Active Guzzle connection
  * @property-read string $accessToken Access token for Slack API
- * @property-read boolean $isAuthenticated Is current web user authenticated to access Slack API?
+ * @property-read boolean $isAuthenticated Is current web user authenticated?
  */
 class ApplicationComponent extends CApplicationComponent
 {
@@ -61,12 +71,16 @@ class ApplicationComponent extends CApplicationComponent
 
     /**
      * Slack Application Component initialization
+     *
+     * @return void Interface implementation
      */
     public function init()
     {
-        $this->_connection = new Client([
+        $this->_connection = new Client(
+            [
             'base_url' => 'https://slack.com/api/',
-        ]);
+            ]
+        );
         parent::init();
     }
 
@@ -74,12 +88,11 @@ class ApplicationComponent extends CApplicationComponent
      * Gets Guzzle connection instance
      *
      * @return \GuzzleHttp\Client
-     * @throws \CException
      */
     public function getConnection()
     {
-        if(!$this->isInitialized) {
-            throw new CException('Slack application no initialized yet', 0);
+        if (!$this->isInitialized) {
+            $this->init();
         }
 
         return $this->_connection;
@@ -109,28 +122,34 @@ class ApplicationComponent extends CApplicationComponent
      * Makes GET request to requested API method
      *
      * @param string $method Method name to call
-     * @param array $data Method input arguments
+     * @param array  $data   Method input arguments
+     *
      * @return array Parsed json from response
      */
     public function get($method, array $data = array())
     {
-        return $this->getConnection()->get($method, [
+        return $this->getConnection()->get(
+            $method, [
             'query' => $data + ['token' => $this->getAccessToken()]
-        ])->json();
+            ]
+        )->json();
     }
 
     /**
      * Makes POST request to requested API method
      *
      * @param string $method Method name to call
-     * @param array $data Method input arguments
+     * @param array  $data   Method input arguments
+     *
      * @return array Parsed json from response
      */
     public function post($method, array $data = array())
     {
-        return $this->getConnection()->post($method, [
+        return $this->getConnection()->post(
+            $method, [
             'query' => $data + ['token' => $this->getAccessToken()]
-        ])->json();
+            ]
+        )->json();
     }
 
     /**
