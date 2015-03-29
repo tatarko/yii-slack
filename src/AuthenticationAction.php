@@ -79,7 +79,12 @@ class AuthenticationAction extends CAction
         if ($code) {
             $this->catchCode($code);
         } elseif ($error) {
-            $this->onAuthError(new CEvent($this, $error));
+            $this->onAuthError(
+                new CEvent(
+                    $this,
+                    new CException("slack error: $error", 0)
+                )
+            );
         } else {
             $this->controller->redirect(
                 'https://slack.com/oauth/authorize?' . http_build_query(
@@ -118,11 +123,21 @@ class AuthenticationAction extends CAction
                     ),
                 ]
             );
-            Yii::app()->user->setState(
-                $slack->tokenStateName,
-                $response['access_token']
-            );
-            $this->onAuthSuccess(new CEvent($this, $response));
+            
+            if (isset($response['access_token'])) {
+                Yii::app()->user->setState(
+                    $slack->tokenStateName,
+                    $response['access_token']
+                );
+                $this->onAuthSuccess(new CEvent($this, $response));
+            } else {
+                $this->onAuthError(
+                    new CEVent(
+                        $this,
+                        new CException('Missing access token in API response')
+                    )
+                );
+            }
         } catch(TransferException $ex) {
             $this->onAuthError(new CEvent($this, $ex));
         }
@@ -137,7 +152,7 @@ class AuthenticationAction extends CAction
      */
     public function onAuthSuccess($event)
     {
-        Yii::log($event->params, CLogger::LEVEL_INFO, 'slack');
+        Yii::log(json_encode($event->params), CLogger::LEVEL_INFO, 'slack');
         $this->raiseEvent('onAuthSuccess', $event);
         $this->controller->redirect(Yii::app()->homeUrl);
     }
@@ -151,7 +166,7 @@ class AuthenticationAction extends CAction
      */
     public function onAuthError($event)
     {
-        Yii::log($event->params, CLogger::LEVEL_ERROR, 'slack');
+        Yii::log((string)$event->params, CLogger::LEVEL_ERROR, 'slack');
         $this->raiseEvent('onAuthError', $event);
         $this->controller->redirect(Yii::app()->homeUrl);
     }
