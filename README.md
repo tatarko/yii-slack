@@ -1,12 +1,15 @@
 # Yii Slack extension
 Yii extension for accessing Slack API in Yii framework via Guzzle.
 
+[![Latest Stable Version](https://poser.pugx.org/tatarko/yii-slack/v/stable.png)](https://packagist.org/packages/tatarko/yii-slack)
+[![Code Climate](https://codeclimate.com/github/tatarko/yii-slack/badges/gpa.png)](https://codeclimate.com/github/tatarko/yii-slack)
+
 ## Installation
 
 **Yii Slack** is composer library so you can install the latest version with:
 
 ```shell
-composer require tatarko/yii-slack
+php composer.phar require tatarko/yii-slack
 ```
 
 ## Configuration
@@ -19,6 +22,8 @@ To your application's config add following:
 		'class' => 'Tatarko\\YiiSlack\\ApplicationComponent',
 		'appId' => '', // Your's application ID
 		'appSecret' => '', // Your's application secret code
+		'tokenStateName' => 'slack.access.token'; // optional - change name of the user's state variable to store access token in
+		'companyToken' => '', // optional - set global access token of your company's account to use slack component without user authentication
 	),
 )
 ```
@@ -33,8 +38,14 @@ class SiteController extends Controller
         return array(
             'slack' => array(
                 'class' => 'Tatarko\\YiiSlack\\AuthenticationAction',
-                'successUrl' => array('site/index'),
-                'errorUrl' => array('site/login'),
+				'onAuthSuccess' => function(CEvent $event) {
+					// you can get $event->params->access_token and store it in some persistant database insteadof user's states (that is basically sessions variable)
+					$this->redirect('welcome');
+				},
+                'onAuthError' => function(CEvent $event) {
+					// $event->params is instance of Exception (CException or GuzzleHttp\Exception\TransferException)
+					$this->redirect('login');
+				},
             ),
         );
     }
@@ -71,11 +82,11 @@ array(6) {
   string(25) "https://myteam.slack.com/"
   'team' =>
   string(7) "My Team"
-  'user'
+  'user' =>
   string(3) "cal"
-  'team_id'
+  'team_id' =>
   string(6) "T12345"
-  'user_id'
+  'user_id' =>
   string(6) "U12345"
 }
 ```
