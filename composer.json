@@ -1,7 +1,7 @@
 {
     "name": "tatarko/yii-slack",
     "description": "Yii extension for accessing Slack API with Guzzle interface",
-	"keywords": ["yii", "slack", "api", "integration"],
+    "keywords": ["yii", "slack", "api", "integration"],
     "require": {
         "guzzlehttp/guzzle": "~5.0",
         "yiisoft/yii": "~1.1"
@@ -11,18 +11,18 @@
         {
             "name": "Tomáš Tatarko",
             "email": "tomas@tatarko.sk",
-			"homepage": "http://tatarko.sk",
-			"role": "Developer"
+            "homepage": "http://tatarko.sk",
+            "role": "Developer"
         }
     ],
-	"support": {
-		"source": "https://github.com/tatarko/yii-slack",
-		"issues": "https://github.com/tatarko/yii-slack/issues",
-		"wiki": "https://github.com/tatarko/yii-slack/wiki"
-	},
-	"autoload": {
-		"psr-4": {
-			"Tatarko\\YiiSlack\\": "src/"
-		}
-	}
+    "support": {
+        "source": "https://github.com/tatarko/yii-slack",
+        "issues": "https://github.com/tatarko/yii-slack/issues",
+        "wiki": "https://github.com/tatarko/yii-slack/wiki"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tatarko\\YiiSlack\\": "src/"
+        }
+    }
 }
