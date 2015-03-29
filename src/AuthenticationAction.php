@@ -1,8 +1,6 @@
 <?php
 
 /**
- * This file is part of the YiiSlack package.
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
@@ -12,7 +10,7 @@
  * @package  YiiSlack
  * @author   Tomáš Tatarko <tomas@tatarko.sk>
  * @license  http://choosealicense.com/licenses/mit/ MIT
- * @link     https://github.com/tatarko/yii-slack Official repozitory
+ * @link     https://github.com/tatarko/yii-slack Official repository
  */
 
 namespace Tatarko\YiiSlack;
@@ -35,7 +33,7 @@ use GuzzleHttp\Exception\TransferException;
  * @package  YiiSlack
  * @author   Tomáš Tatarko <tomas@tatarko.sk>
  * @license  http://choosealicense.com/licenses/mit/ MIT
- * @link     https://github.com/tatarko/yii-slack Official repozitory
+ * @link     https://github.com/tatarko/yii-slack Official repository
  */
 class AuthenticationAction extends CAction
 {
@@ -123,7 +121,7 @@ class AuthenticationAction extends CAction
                     ),
                 ]
             );
-            
+
             if (isset($response['access_token'])) {
                 Yii::app()->user->setState(
                     $slack->tokenStateName,
@@ -134,7 +132,7 @@ class AuthenticationAction extends CAction
                 $this->onAuthError(
                     new CEVent(
                         $this,
-                        new CException('Missing access token in API response')
+                        new CException('Missing access token in API response', 0)
                     )
                 );
             }

@@ -1,8 +1,6 @@
 <?php
 
 /**
- * This file is part of the YiiSlack package.
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
@@ -12,7 +10,7 @@
  * @package  YiiSlack
  * @author   Tomáš Tatarko <tomas@tatarko.sk>
  * @license  http://choosealicense.com/licenses/mit/ MIT
- * @link     https://github.com/tatarko/yii-slack Official repozitory
+ * @link     https://github.com/tatarko/yii-slack Official repository
  */
 
 namespace Tatarko\YiiSlack;
@@ -21,6 +19,7 @@ use Yii;
 use CApplicationComponent;
 use CException;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\StateException;
 
 /**
  * Slack application component
@@ -32,7 +31,7 @@ use GuzzleHttp\Client;
  * @package       YiiSlack
  * @author        Tomáš Tatarko <tomas@tatarko.sk>
  * @license       http://choosealicense.com/licenses/mit/ MIT
- * @link          https://github.com/tatarko/yii-slack Official repozitory
+ * @link          https://github.com/tatarko/yii-slack Official repository
  * @property-read \GuzzleHttp\Client $connection Active Guzzle connection
  * @property-read string $accessToken Access token for Slack API
  * @property-read boolean $isAuthenticated Is current web user authenticated?
@@ -125,14 +124,22 @@ class ApplicationComponent extends CApplicationComponent
      * @param array  $data   Method input arguments
      *
      * @return array Parsed json from response
+     * @throws \GuzzleHttp\Exception\StateException In case that response flag
+     * "ok" is not set correctly
      */
     public function get($method, array $data = array())
     {
-        return $this->getConnection()->get(
+        $response = $this->getConnection()->get(
             $method, [
             'query' => $data + ['token' => $this->getAccessToken()]
             ]
         )->json();
+
+        if (!isset($response['ok']) || !$response['ok']) {
+            throw new StateException('Incorrect response', 0);
+        }
+
+        return $response;
     }
 
     /**
@@ -142,14 +149,22 @@ class ApplicationComponent extends CApplicationComponent
      * @param array  $data   Method input arguments
      *
      * @return array Parsed json from response
+     * @throws \GuzzleHttp\Exception\StateException In case that response flag
+     * "ok" is not set correctly
      */
     public function post($method, array $data = array())
     {
-        return $this->getConnection()->post(
+        $response = $this->getConnection()->post(
             $method, [
             'query' => $data + ['token' => $this->getAccessToken()]
             ]
         )->json();
+
+        if (!isset($response['ok']) || !$response['ok']) {
+            throw new StateException('Incorrect response', 0);
+        }
+
+        return $response;
     }
 
     /**

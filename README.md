@@ -39,7 +39,7 @@ class SiteController extends Controller
             'slack' => array(
                 'class' => 'Tatarko\\YiiSlack\\AuthenticationAction',
 				'onAuthSuccess' => function(CEvent $event) {
-					// you can get $event->params->access_token and store it in some persistant database insteadof user's states (that is basically sessions variable)
+					// you can get $event->params->access_token and store it in some persistant database instead of user's states (that is basically sessions variable)
 					$this->redirect('welcome');
 				},
                 'onAuthError' => function(CEvent $event) {
