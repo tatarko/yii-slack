@@ -131,7 +131,7 @@ class ApplicationComponent extends CApplicationComponent
     {
         $response = $this->getConnection()->get(
             $method, [
-            'query' => $data + ['token' => $this->getAccessToken()]
+                'query' => $data + ['token' => $this->getAccessToken()]
             ]
         )->json();
 
@@ -156,7 +156,7 @@ class ApplicationComponent extends CApplicationComponent
     {
         $response = $this->getConnection()->post(
             $method, [
-            'query' => $data + ['token' => $this->getAccessToken()]
+                'body' => $data + ['token' => $this->getAccessToken()]
             ]
         )->json();
 
